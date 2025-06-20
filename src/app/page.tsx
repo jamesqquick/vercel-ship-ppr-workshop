@@ -1,103 +1,159 @@
-import Image from "next/image";
+import { Product } from "@/vibes/soul/primitives/product-card";
+import { ProductList } from "@/vibes/soul/sections/product-list";
 
 export default function Home() {
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+    <div className="max-w-6xl mx-auto pt-24 px-10">
+      <ProductList products={products} />
     </div>
   );
 }
+
+const products: Product[] = [
+  {
+    id: '1',
+    title: 'Philodendron Imperial Red',
+    subtitle: 'Indoor Plant',
+    badge: 'Popular',
+    price: '$44.95',
+    image: {
+      src: 'https://storage.googleapis.com/s.mkswft.com/RmlsZTowNzAzMzk0Ni01NGNhLTQ3ZDYtODgyYi0wYWI3NTUzNTU4YjQ=/kv08IvX08j.jpeg',
+      alt: 'Philodendron Imperial Red',
+    },
+    href: '#',
+    rating: 4,
+  },
+  {
+    id: '2',
+    title: 'Monstera',
+    subtitle: 'Indoor Plant',
+    badge: 'New',
+    price: '$24.99',
+    image: {
+      src: 'https://storage.googleapis.com/s.mkswft.com/RmlsZToyMTIwYzE1ZC01YzlkLTQ3MDgtOTZhOS1hZDkwYjVmNDAwZWY=/n0P83RMnClS%202930x3663.jpeg',
+      alt: 'Monstera',
+    },
+    href: '#',
+    rating: 4.4,
+  },
+  {
+    id: '3',
+    title: 'Pink Caladium',
+    subtitle: 'Indoor Plant',
+    price: '$19.95',
+    image: {
+      src: 'https://storage.googleapis.com/s.mkswft.com/RmlsZTpmNjJhNTMyOC1hNzMwLTQxYjQtODE5Ny05ZDdlYWViMjJhMDQ=/AaZW4j2VTd4%202489x3111.jpeg',
+      alt: 'Pink Caladium',
+    },
+    href: '#',
+    rating: 4.8,
+  },
+  {
+    id: '4',
+    title: 'Hoya Kerrii',
+    subtitle: 'Indoor Plant',
+    price: '$16.99',
+    image: {
+      src: 'https://storage.googleapis.com/s.mkswft.com/RmlsZTpmZmRlZDM2MS0yMWMwLTRiYjktOTU2Ny1mNWM0YjcwMGIwZWQ=/QSaMw6aC_AN%208600x10750.jpeg',
+      alt: 'Hoya Kerrii',
+    },
+    href: '#',
+    rating: 2.2,
+  },
+  {
+    id: '5',
+    title: 'Bird Nest Fern',
+    subtitle: 'Indoor Plant',
+    price: '$24.99',
+    image: {
+      src: 'https://storage.googleapis.com/s.mkswft.com/RmlsZTplYTBhYzExNC1lYWIwLTQyZjAtYmQzZS04NDJlNmRlM2RkNTc=/gfGRQi5pHeJ%203094x3868.jpeg',
+      alt: 'Bird Nest Fern',
+    },
+    href: '#',
+    rating: 3.5,
+  },
+  {
+    id: '6',
+    title: 'Jade Plant',
+    subtitle: 'Indoor Plant',
+    price: '$24.99',
+    image: {
+      src: 'https://storage.googleapis.com/s.mkswft.com/RmlsZTozZWFjZDhlZi1lY2EzLTRiMzYtYTJkNS02ZGJkOWE4MzUwYjQ=/lJg081kQqvc.jpeg',
+      alt: 'Jade Plant',
+    },
+    href: '#',
+    rating: 5,
+  },
+  {
+    id: '7',
+    title: 'Snake Plant',
+    subtitle: 'Indoor Plant',
+    price: '$34.95',
+    image: {
+      src: 'https://storage.googleapis.com/s.mkswft.com/RmlsZTozOTRmNDIyNC0wZDRkLTRmOWMtYjVjNi03ZjljNGE2ZjdiOTU=/snake-plant.jpg',
+      alt: 'Snake Plant',
+    },
+    href: '#',
+    rating: 4.9,
+  },
+  {
+    id: '8',
+    title: 'Spider Plant',
+    subtitle: 'Indoor Plant',
+    price: '$12.99',
+    image: {
+      src: 'https://storage.googleapis.com/s.mkswft.com/RmlsZTphNzdlNDQwNS1mNDIxLTRiZTQtOGJkMy0wZTc2OWMyYmEzYjY=/spider-plant.jpg',
+      alt: 'Spider Plant',
+    },
+    href: '#',
+    rating: 4.2,
+  },
+  {
+    id: '9',
+    title: 'African Fig Tree',
+    subtitle: 'Indoor Plant',
+    price: '$49.99',
+    image: {
+      src: 'https://storage.googleapis.com/s.mkswft.com/RmlsZTo2YTk0Y2E0Yy0wMjcyLTRkZTItOWQ2Mi0xMTY4OTczYzI1ZWM=/african-fig.jpg',
+      alt: 'African Fig Tree',
+    },
+    href: '#',
+    rating: 4.7,
+  },
+  {
+    id: '10',
+    title: 'Birds of Paradise',
+    subtitle: 'Indoor Plant',
+    price: '$29.95',
+    image: {
+      src: 'https://storage.googleapis.com/s.mkswft.com/RmlsZTo2MTE4YmY5MC0wOWJlLTRlZDUtYjYyOS0wNzgwOTdiOWNjYTk=/birds-of-paradise.jpg',
+      alt: 'Birds of Paradise',
+    },
+    href: '#',
+    rating: 4.5,
+  },
+  {
+    id: '11',
+    title: 'ZZ Plant',
+    subtitle: 'Indoor Plant',
+    price: '$22.99',
+    image: {
+      src: 'https://storage.googleapis.com/s.mkswft.com/RmlsZToxNTFhZTMwNC0zYWZhLTRiZDgtOWRlYy01ODU1OTZlNjQyZDM=/zz-plant.jpg',
+      alt: 'ZZ Plant',
+    },
+    href: '#',
+    rating: 4.6,
+  },
+  {
+    id: '12',
+    title: 'Dracaena',
+    subtitle: 'Indoor Plant',
+    price: '$18.95',
+    image: {
+      src: 'https://storage.googleapis.com/s.mkswft.com/RmlsZTozOWNmZThkOC00Y2M0LTQ2ZTAtODUwMy1lZmVhMzhhMWRmN2Y=/dracaena.jpg',
+      alt: 'Dracanea',
+    },
+    href: '#',
+    rating: 4.3,
+  },
+];
