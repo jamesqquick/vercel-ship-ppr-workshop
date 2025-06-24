@@ -1,5 +1,8 @@
 # Vercel SHIP PPR Workshop
 
+
+![QR Code](/images/qr-code.png)
+
 Following along below for a hands-on opportunity to learn about some of the intricacies of streaming and data loading in Next.js.
 
 ## Getting Started
