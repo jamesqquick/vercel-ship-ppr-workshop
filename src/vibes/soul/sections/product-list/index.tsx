@@ -6,10 +6,9 @@ import {
   ProductCardSkeleton,
 } from "@/vibes/soul/primitives/product-card";
 import * as Skeleton from "@/vibes/soul/primitives/skeleton";
-import { Suspense, use } from "react";
 
 interface ProductListProps {
-  products: Streamable<Product[]>;
+  products: Product[];
   compareProducts?: Product[];
   className?: string;
   colorScheme?: "light" | "dark";
@@ -46,7 +45,7 @@ export function ProductList({
   emptyStateSubtitle = "Try browsing our complete catalog of products.",
   placeholderCount = 8,
 }: ProductListProps) {
-  const productsData = useStreamable(products);
+  const productsData = products;
   //some use case to use `.then` here that will cause an infinite loop
   if (productsData.length === 0) {
     return (
@@ -129,31 +128,3 @@ export function ProductListEmptyState({
     </Skeleton.Root>
   );
 }
-
-//TODO: uncomment code
-
-interface ProductListWrapperProps {
-  products: Streamable<Product[]>;
-}
-
-export default function ProductListWrapper({
-  products,
-}: ProductListWrapperProps) {
-  return (
-    <Suspense fallback={<ProductListSkeleton />}>
-      <ProductList products={products} />
-    </Suspense>
-  );
-}
-
-
-export function useStreamable<T>(streamable: Streamable<T>): T {
-  return isPromise(streamable) ? use(streamable) : streamable;
-}
-
-function isPromise<T>(value: Streamable<T>): value is Promise<T> {
-  return value instanceof Promise;
-}
-
-export type Streamable<T> = T | Promise<T>;
-

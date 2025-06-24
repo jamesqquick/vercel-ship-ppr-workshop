@@ -4,12 +4,13 @@ import { ProductList } from "@/vibes/soul/sections/product-list";
 export default function Home() {
   return (
     <div className="max-w-6xl mx-auto pt-24 px-10">
-      <ProductList products={products} />
+      <h1 className="text-white text-4xl text-center mb-20">My Products</h1>
+      <ProductList products={defaultProducts} />
     </div>
   );
 }
 
-const products: Product[] = [
+const defaultProducts: Product[] = [
   {
     id: '1',
     title: 'Philodendron Imperial Red',
