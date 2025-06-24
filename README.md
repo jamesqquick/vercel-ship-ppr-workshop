@@ -71,7 +71,7 @@ const defaultProducts: Product[] = [
 As-is, the `ProductList` component is designed to work with synchronous data. This means the data needs to be loaded before it's passed to the component itself. However, we can update the data loading in the page component to simulate asynchronous data fetching. To do this, create a promise that resolves the product data after a delay, simulating a network request. Then, await this promise to reference the data itself. To use `await`, you'll also need to mark the page component as `async`.
 
 ```tsx
-  export default async function Home() {
+export default async function Home() {
     const products = await (new Promise(res => setTimeout(() => res(defaultProducts), 2000)) as Promise<Product[]>);
 
   return (
@@ -81,6 +81,7 @@ As-is, the `ProductList` component is designed to work with synchronous data. Th
     </div>
   );
 }
+```
 
 
 By default, components in Next.js are server components which enables us to use async/await for data fetching on the server. As of now, this is Server-Side Rendering (SSR) which means that all data is loaded on the server before any markup is sent back to the client. This is true even for static markup like the `h1`. We can improve this by taking advantage of React's Suspense and streaming capabilities. This will allow us to immediately send the initial static HTML to the client while the product data is still being fetched and then stream in the product data when it's ready.
@@ -123,7 +124,7 @@ export async function ProductList({
 In the page component, remove the `await` from the create promise and pass the promise directly to the `ProductList` component. This will allow the `ProductList` to handle the promise internally. You can also remove the `async` keyword from the page component since we're not using `await` there anymore.
 
 ```tsx
-  export default function Home() {
+export default function Home() {
 
   const products = new Promise(res => setTimeout(() => res(defaultProducts), 2000)) as Promise<Product[]>;
   return (
@@ -190,7 +191,7 @@ Update the `ProductList` component to use the `use` function from React and remo
 import { use } from "react";
 
 //...component code
-  const productsData = use(products);
+const productsData = use(products);
 //...
 ```
 Now, if you try to run the app again, you will see that the `ProductList` component works in a Client Component without any issues.
@@ -213,7 +214,7 @@ interface ProductListProps {
 Then, update the `ProductList` component to handle both cases. You can use the `use` function to resolve the promise if it is one, or use the data directly if it is an array like so:
 
 ```tsx
-  const productsData = products instanceof Promise ? use(products) : products;
+const productsData = products instanceof Promise ? use(products) : products;
 ```
   
 You can test that this works by passing both synchronous and asynchronous data to the `ProductList` component in the page component:
@@ -229,7 +230,7 @@ Asynchronous data:
 
 Synchronous data:
 ```tsx
-    <ProductList products={defaultProducts} colorScheme="dark" />
+<ProductList products={defaultProducts} colorScheme="dark" />
 ```
 
 This adds more flexibility to the `ProductList` component, but it is a bit inconvenient to have to manually check if the `products` prop is a promise or not every time we use it. To improve this, we can create a type alias for `Streamable` data and an abstraction that handles the logic of checking if the data is a promise or not.
@@ -241,7 +242,8 @@ export type Streamable<T> = T | Promise<T>;
 
 Then, update the props interface to use this new type alias:
 
-```tsx interface ProductListProps {
+```tsx 
+interface ProductListProps {
   products: Streamable<Product[]>;
   // other props...
 }
@@ -412,7 +414,7 @@ export function useStreamable<T>(streamable: Streamable<T>): T {
 Make sure that your home page still includes the `use client` directive and refresh the page. Things should still work as expected. Now, instead of passing a promise to the `ProductList` component, pass the synchronous data directly:
 
 ```tsx
-    <ProductList products={defaultProducts} colorScheme="dark" />
+<ProductList products={defaultProducts} colorScheme="dark" />
 ```
 
 You'll see you now get an error:
@@ -656,7 +658,7 @@ const promiseCache = new Map<string, Promise<unknown>>();
 Lastly, you'll need to pass the `queryKey` prop to the `ProductList` component in the page component.
 
 ```tsx
-    <ProductList products={defaultProducts} colorScheme="dark" queryKey="products-list"/>
+<ProductList products={defaultProducts} colorScheme="dark" queryKey="products-list"/>
 ```
 
 Now each combination of asynchronous and synchronous data and server and client component should work.
