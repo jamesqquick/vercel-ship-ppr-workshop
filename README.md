@@ -3,38 +3,40 @@
 
 ![QR Code](/images/qr-code.png)
 
-Following along below for a hands-on opportunity to learn about some of the intricacies of streaming and data loading in Next.js.
+Following along below for a hands-on opportunity to learn about some of the intricacies of streaming and data loading in Next.js. 
+
+This workshop will walk through building some of the key concepts we've implemented into [VIBES](https://vibes.site/), a UI component library that is deeply integrated with Next.js. You can specifically refer to the [Product List VIBES component](https://vibes.site/docs/soul/product-list) for a finished version of what we'll be building in this workshop.
+
+## Overview
+
+In this workshop, we're going to focus on the following scenario. Imagine you're tasked with building a UI component library that integrates with data loading patterns in Next.js. Our specific goal is to create a `ProductList` component that:
+
+- integrates with React Suspense
+- can handle both synchronous and asynchronous data
+- implements streaming and loading states
+- supports PPR
+
+This is a different take than other UI libraries. Options like ShadCN and Radix UI provide low-level primitives for building components, but they don't offer built-in support for data fetching and loading states. Those are great options, but we're taking a different approach. Our approach will be to create a higher-level abstraction that makes it easy to build data-driven components with built-in support for streaming and loading states.
 
 ## Getting Started
+
+Install dependencies:
+
+```bash
+npm install
+```
 
 First, run the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-## Overview
-
-In this workshop, we're going to focus on the following scenario. Imagine you're tasked with building a UI component library that integrates with data loading patterns in Next.js. Our specific goal is to create a `ProductList` component that 
-
-- integrates with React Suspense
-- can handle both synchronous and asynchronous data
-- streaming and loading states
-- supports PPR
-
-This is a different take than other UI libraries. Options like ShadCN and Radix UI provide low-level primitives for building components, but they don't offer built-in support for data fetching and loading states. Our approach will be to create a higher-level abstraction that makes it easy to build data-driven components with built-in support for loading states and error handling.
-
 ## Initial Code Overview
 
-The initial codebase provides a `ProductList` component that works with synchronous data. This component has dependencies on a few other components that have already been included for you, such as `ProductCard`, `Skeleton`, etc. You can find all of this components (a mix of utils, primitives, and sections) in the `src/vibes/soul` directory. That said, the only component you will need to make changes to is the `ProductList` component. The goal is to enhance the `ProductList` component to support asynchronous data loading, streaming, and loading states.
+The initial codebase provides a `ProductList` component that works with synchronous data. The styling in this component is already done for you. It also depends on a few other components that have already been included as well, such as `ProductCard`, `Skeleton`, etc. You can find all of these components (a mix of utils, primitives, and sections) in the `src/vibes/soul` directory. That said, the only UI component you will need to make changes to is the `ProductList` component. The goal is to enhance the `ProductList` component to support asynchronous data loading, streaming, and loading states.
 
 On the root page route, we are passing static product data to the `ProductList` component. 
 
@@ -62,7 +64,7 @@ const defaultProducts: Product[] = [
     href: '#',
     rating: 4,
   },
-  /...
+  //...
 ]
 ```
 
@@ -72,7 +74,7 @@ As-is, the `ProductList` component is designed to work with synchronous data. Th
 
 ```tsx
 export default async function Home() {
-    const products = await (new Promise(res => setTimeout(() => res(defaultProducts), 2000)) as Promise<Product[]>);
+  const products = await (new Promise(res => setTimeout(() => res(defaultProducts), 2000)) as Promise<Product[]>);
 
   return (
     <div>
@@ -83,16 +85,15 @@ export default async function Home() {
 }
 ```
 
-
-By default, components in Next.js are server components which enables us to use async/await for data fetching on the server. As of now, this is Server-Side Rendering (SSR) which means that all data is loaded on the server before any markup is sent back to the client. This is true even for static markup like the `h1`. We can improve this by taking advantage of React's Suspense and streaming capabilities. This will allow us to immediately send the initial static HTML to the client while the product data is still being fetched and then stream in the product data when it's ready.
+By default, components in Next.js are server components which enables us to use async/await for data fetching on the server. As of now, this is basic Server-Side Rendering (SSR) which means that all data is loaded on the server before any markup is sent back to the client. This is true even for static markup like the `h1` header. We can improve this by taking advantage of React's Suspense and streaming capabilities. This will allow us to immediately send the initial static HTML to the client while the product data is still being fetched and then stream in the product data when it's ready.
 
 ## Add Streaming and with Suspense
 
-To support streaming and loading states, you have to wrap an component that asynchronously fetches data in a `Suspense` component. This allows React to suspend rendering until the data is ready, showing a fallback UI in the meantime. To support this, we need to update the `ProductList` component to:
+To support streaming and loading states, you have to wrap a component that asynchronously fetches data in a `Suspense` component. This allows React to suspend rendering until the data is ready, showing a fallback UI in the meantime. To support this, we need to update the `ProductList` component to:
 
-- accept a promise for `products` props that resolves to the array of data
--  be marked as `async`
-- use `await` to resolve the promise before rendering
+- be marked as `async`
+- accept a promise for the `products` prop that resolves to the array of data
+- uses `await` to resolve the promise before rendering
 
 Start by updating the `ProductListProps` interface to accept a `Promise<Product[]>` for the `products` prop.
 
@@ -121,7 +122,7 @@ export async function ProductList({
 }
 ```
 
-In the page component, remove the `await` from the create promise and pass the promise directly to the `ProductList` component. This will allow the `ProductList` to handle the promise internally. You can also remove the `async` keyword from the page component since we're not using `await` there anymore.
+In the page component, remove the `await` from the promise and pass the promise directly to the `ProductList` component. This will allow the `ProductList` to handle the promise internally. You should also remove the `async` keyword from the page component since we're not using `await` there anymore.
 
 ```tsx
 export default function Home() {
@@ -135,7 +136,7 @@ export default function Home() {
   );
 }
 ```
-Lastly, you can incorporate streaming and loading by importing the `Suspense` component from React, wrapping the `ProductList` component with it, and adding a simple `fallback`. This will allow you to show a fallback UI while the product data is being fetched.
+Lastly, you can incorporate streaming and loading by importing the `Suspense` component from React, wrapping the `ProductList` component with it, and adding a simple loading text as the `fallback`. This will allow you to show a fallback UI while the product data is being fetched.
 
 
 ```tsx
@@ -143,6 +144,32 @@ Lastly, you can incorporate streaming and loading by importing the `Suspense` co
   <ProductList products={products} />
 </Suspense>
 ```
+
+## PPR Overview
+
+Let's stop for a second and talk about what just happened. By using `Suspense`, we are able start sending initial HTML to the client immediately, while the product data is still being fetched. This means that the user can see the static content (like the header) right away. Then the product list will be streamed in once it's ready. 
+
+One important thing to note, though, is that **this still requires a full trip to the application server**. This isn't a fully static page that is stored on a CDN and is replicated around the world. This is where [Partial Prerendering](https://nextjs.org/docs/app/getting-started/partial-prerendering)(PPR) could help improve our performance. 
+
+PPR allows the static part of your application to be served from a CDN, while still allowing dynamic data to be fetched on the server and streamed to the client. In this case, the markup for the page layout including the header will be served from the CDN, while the product data will still be fetched on the server and streamed to the client.
+
+The beautiful thing is that this is all handled automatically by Next.js. You don't have to do anything special to enable PPR. Just use `Suspense` and `async/await` in your components, and Next.js will take care of the rest as long as you enable PPR in your `next.config.js` file:
+
+```ts
+import type { NextConfig } from 'next'
+ 
+const nextConfig: NextConfig = {
+  experimental: {
+    ppr: 'incremental',
+  },
+}
+ 
+export default nextConfig
+```
+
+From now on, we will continue to focus on improving the developer experience of the `ProductList` component. All of the updates we will make will still be supported by PPR.
+
+## Improving the Loading State UI
 
 This works but it doesn't look great. Already included in the `ProductList` component is a `ProductListSkeleton` component that can be used as a fallback UI. Import and use that component to display a much nicer loading state.
 
@@ -166,7 +193,7 @@ Let's start by addressing the first bullet point by updating the `ProductList` c
 
 ##  Update ProductList to Use `use`
 
-To prove that the current implmeentation doesn't support client components, mark the root page component with `'use client'`. 
+To prove that the current implementation doesn't support client components, mark the root page component with the `'use client'` directive.
 
 ```tsx
 'use client';
@@ -176,7 +203,7 @@ import { Suspense } from "react";
 //...
 ```
 
-You will then see an error indicating that `ProductList` is an async Client Component, which is not allowed.
+You will see the following error indicating that `ProductList` is an async Client Component, which is not allowed.
 
 ```bash
 <ProductList> is an async Client Component. Only Server Components can be async at the moment. This error is often caused by accidentally adding `'use client'` to a module that was originally written for the server.
@@ -187,7 +214,7 @@ Thankfully, React provides a new function called `use` that allows us to use pro
 Update the `ProductList` component to use the `use` function from React and remove the reference to `async/await`. This will allow it to work in both Server and Client components.
 
 ```tsx
-//...other importrs
+//...other imports
 import { use } from "react";
 
 //...component code
@@ -196,11 +223,8 @@ const productsData = use(products);
 ```
 Now, if you try to run the app again, you will see that the `ProductList` component works in a Client Component without any issues.
 
-For clarity, go ahead and remove the `'use client'` directive from the root page component. This will be important in a few steps.
 
-```tsx
-
-## Accept Synchronous or Asynchronous Data
+## Accept Synchronous and Asynchronous Data
 
 Right now, we are requiring the user of the  `ProductList` component to pass a promise for the `products` prop. However, it would be more flexible if we allowed the user to pass either synchronous data (an array of products) or asynchronous data (a promise that resolves to an array of products). To do this, update the `ProductListProps` interface to accept either a `Product[]` or a `Promise<Product[]>`.
 
@@ -211,7 +235,7 @@ interface ProductListProps {
 }
 ```
 
-Then, update the `ProductList` component to handle both cases. You can use the `use` function to resolve the promise if it is one, or use the data directly if it is an array like so:
+Then, update the `ProductList` component to handle both cases. You can use the `use` function to resolve the promise if it is one, or use the data directly if not:
 
 ```tsx
 const productsData = products instanceof Promise ? use(products) : products;
@@ -249,16 +273,19 @@ interface ProductListProps {
 }
 ```
 
-This `Streamable` type can now be used throughout the codebase to represent data that can be either synchronous or asynchronous. Now we can address one of the previous painpoints which was the fact that the user had to manually wrap the `ProductList` component in a `Suspense` component. We can handle this internally by creating a wrapper component that will take care of the `Suspense` logic for us.
+This `Streamable` type can now be used throughout the codebase to represent data that can be either synchronous or asynchronous. Now we can address one of the previous painpoints which was the fact that the user has to manually wrap the `ProductList` component in a `Suspense` component. We can handle this internally by creating a wrapper component that will take care of the `Suspense` logic for us.
 
 
-## Handle `Suspense` Internally`
+## Handle `Suspense` Internally
 
 To simplify the developer experience for using the `ProductList` component, we can create a wrapper component that automatically handles the `Suspense` logic. Add the following wrapper component at the bottom of the `ProductList` component.
 
-This wrapper accepts the same props as the `ProductList` component and wraps it in a `Suspense` component with a fallback of `ProductListSkeleton`. Make sure to add the appropriate import for `Suspense`.
+This wrapper accepts the same props as the `ProductList` component and wraps it in a `Suspense` component with a fallback of `ProductListSkeleton`. Make sure to add the appropriate import for `Suspense` as well.
 
 ```tsx
+import { Suspense } from "react";
+//...
+
 export default function ProductListWrapper(props: ProductListProps) {
   return (
     <Suspense fallback={<ProductListSkeleton />}>
@@ -279,7 +306,7 @@ import ProductListWrapper from "@/vibes/soul/sections/product-list";
 <ProductListWrapper products={products} colorScheme="dark" />
 ```
 
-We've now simplified the developer experience for the user of the component, but this still requires manual experience for the component author when creating new components. Let's see if we can create an abstraction to make that easier as well.
+We've now simplified the developer experience for the user of the component, but this still requires manual experience for the component author when creating new components. It all exposes an awkwardly named `ProductListWrapper` component instead of the more intuitive `ProductList`. Let's see if we can create an abstraction to make that more intuitive as well.
 
 ## Create A Replicable Experience for Internal Streaming Handling
 
@@ -295,7 +322,7 @@ function isPromise<T>(value: Streamable<T>): value is Promise<T> {
 }
 ```
 
-Now, we need something to help abstract away the process of wrapping async data loading components in `Suspense`. We can create a `Stream` component that abstracts the `Suspense` wrapping. Additionally, we can create a `UseStreamable` component that will accept a `Streamable` value and render its children with the resolved value. Add the following to the bottom of the `ProductList` component:
+Now, we need something to help abstract away the process of wrapping async data loading components in `Suspense`. We can create a `Stream` component that abstracts the `Suspense` wrapping. Additionally, we can create a `UseStreamable` component that will accept a `Streamable` value and render its children with the resolved value (think Render Props). Add the following to the bottom of the `ProductList` component:
 
 ```tsx
 function UseStreamable<T>({
@@ -393,7 +420,7 @@ export function ProductList({
 
 Now, we have a clean abstraction that allows us to handle streaming of asynchronous data and loading states internally with no extra work necessary from the user. We also still allow the flexibility for the user to pass either synchronous or asynchronous data to the `ProductList` component.
 
-## Performance Issue
+## Tricky Performance Issue
 
 Earlier, we created a `useStreamable` function that allows us to abstract the login for handling both synchronous and asynchronous data.
 
@@ -403,7 +430,7 @@ export function useStreamable<T>(streamable: Streamable<T>): T {
 }
 ```
 
-Let's explore a slightly different version of this that will lead to a pretty interesting performance issue. Instead of manually checking if `streamable` is a promise, we can use `Promise.resolve` to convert it to a promise if it isn't one already. This will allow us to use the same logic for both synchronous and asynchronous data without having to check if it's a promise or not. Update the `useStreamable` function like so:
+Let's explore a slightly different version of this that will lead to a pretty interesting performance issue. Instead of manually checking if `streamable` is a promise, we can use `Promise.resolve` to convert it to a promise if it isn't one already. Seemingly, this solution is a tiny bit simpler. Update the `useStreamable` function like so:
 
 ```tsx
 export function useStreamable<T>(streamable: Streamable<T>): T {
@@ -423,11 +450,11 @@ You'll see you now get an error:
 A component was suspended by an uncached promise. Creating promises inside a Client Component or hook is not yet supported, except via a Suspense-compatible library or framework.
 ```
 
-The problem here is that `Promise.resolve` is creating a new promise from the synchronous data every time the component renders. This means that every time the component re-renders, it creates a new promise, which causes React to suspend rendering and wait for the promise to resolve. This leads to an infinite loop of re-renders because the component is always suspended.
+The problem here is that `Promise.resolve` is creating a new promise from the synchronous data every time the component renders. This leads to an infinite loop of re-renders because the component.
 
 To solve for this, we need to implement a caching strategy for promises. Basically, the first time we see a promise, we save it in the cache. Then, each time we reference a promise, we check the cache first. If it exists, we return the cached promise; if not, we create a new promise and save it in the cache.
 
-We can store our promise cache in a `map` like so:
+In this simplified example, we can store our promise cache in a `map` like so:
 
 ```tsx
 const promiseCache = new Map<string, Promise<unknown>>();
@@ -437,20 +464,18 @@ Then, we can update the `useStreamable` function to check the cache before creat
 
 ```tsx
 export function useStreamable<T>(streamable: Streamable<T>, key: string): T {
-  console.log("useStreamable", key);
   if(!isPromise(streamable)) {
     return streamable;
   }
 
   if(!promiseCache.has(key)) {
-    console.log("first time using streamable", key);
     promiseCache.set(key, Promise.resolve(streamable));
   }
   return use(promiseCache.get(key) as Promise<T>);
 }
 ```
 
-Notice, `useStreamable` now accepts a `key` parameter. This key will be used to store and retrieve the promise from the cache. This also means we need to pass a key to `ProductList` component and on down to `useStreamable`. For now, we can prop drill this to get to the right place. Update `ProductListProps` to  include a `key` prop:
+Notice, `useStreamable` now accepts a `key` parameter. This key will be used to store and retrieve the promise from the cache. This also means we need to pass a key to `ProductList` component and on down to `useStreamable`. For now, we can prop drill this to get to the right place. Update `ProductListProps` to include a `queryKey` prop:
 
 ```tsx
 interface ProductListProps {
@@ -662,4 +687,6 @@ Lastly, you'll need to pass the `queryKey` prop to the `ProductList` component i
 ```
 
 Now each combination of asynchronous and synchronous data and server and client component should work.
+
+## Wrap Up
 
