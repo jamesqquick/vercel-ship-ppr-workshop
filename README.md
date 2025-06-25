@@ -5,7 +5,7 @@
 
 Following along below for a hands-on opportunity to learn about some of the intricacies of streaming and data loading in Next.js. 
 
-This workshop will walk through building some of the key concepts we've implemented into [VIBES](https://vibes.site/), a UI component library that is deeply integrated with Next.js. You can specifically refer to the [Product List VIBES component](https://vibes.site/docs/soul/product-list) for a finished version of what we'll be building in this workshop.
+This workshop will walk through building some of the key concepts we've implemented into [VIBES](https://vibes.site/), a copy and paste UI component library that is deeply integrated with Next.js. You can specifically refer to the [Product List VIBES component](https://vibes.site/docs/soul/product-list) and the [Streamable component](https://vibes.site/docs/soul/streamable) for a finished version of what we'll be building in this workshop.
 
 ## Overview
 
@@ -688,5 +688,19 @@ Lastly, you'll need to pass the `queryKey` prop to the `ProductList` component i
 
 Now each combination of asynchronous and synchronous data and server and client component should work.
 
+## Final Example
+
+You've done a lot of work that so far has been included directly in the `ProductList` component.
+
+The next obvious step would be to move the streaming patterns into a separate utility file so that you can reuse it across different components. This will allow you to create a consistent developer experience for all components that need to handle streaming and loading states.
+
+That said, there are still a few different details we didn't address. First is a more fully fleshed out setup for handling caching of promises. The second is how to handle streaming and promise caching for multiple promises being passed to a component.
+
+Thankfully, the final example already with all of those details exists in this repo. You can find it in `src/vibes/soul/lib/streamable.tsx`.
+
 ## Wrap Up
+
+Congratulations! You've now learned about how to build a copy and paste UI component that integrates with Next.js, data loading, and streaming!
+
+Checkout out [VIBES](https://vibes.site/) to see how we use these patterns in a real-world set of components.
 
