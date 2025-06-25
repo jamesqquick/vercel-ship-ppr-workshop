@@ -167,6 +167,12 @@ const nextConfig: NextConfig = {
 export default nextConfig
 ```
 
+You'll also need to mark your route to support experimental PPR.
+
+```tsx
+export const experimental_ppr = true
+```
+
 From now on, we will continue to focus on improving the developer experience of the `ProductList` component. All of the updates we will make will still be supported by PPR.
 
 ## Improving the Loading State UI
