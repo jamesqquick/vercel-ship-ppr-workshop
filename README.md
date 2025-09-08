@@ -20,6 +20,12 @@ This is a different take than other UI libraries. Options like ShadCN and Radix 
 
 ## Getting Started
 
+First, clone the repo:
+
+```bash
+git clone https://github.com/jamesqquick/vercel-ship-ppr-workshop.git
+```
+
 Check out the `start` branch.
 
 ```bash
