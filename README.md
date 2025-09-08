@@ -20,6 +20,12 @@ This is a different take than other UI libraries. Options like ShadCN and Radix 
 
 ## Getting Started
 
+Check out the `start` branch.
+
+```bash
+git checkout start
+```
+
 Install dependencies:
 
 ```bash
