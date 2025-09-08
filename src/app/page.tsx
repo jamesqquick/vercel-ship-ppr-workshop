@@ -1,11 +1,14 @@
 import { Product } from "@/vibes/soul/primitives/product-card";
 import { ProductList } from "@/vibes/soul/sections/product-list";
 
+
 export default function Home() {
+
+  const products = new Promise(res => setTimeout(() => res(defaultProducts), 2000)) as Promise<Product[]>;
   return (
-    <div className="max-w-6xl mx-auto pt-12 px-10">
+    <div>
       <h1 className="text-white text-4xl text-center mb-20">My Products</h1>
-      <ProductList products={defaultProducts} />
+        <ProductList products={products} colorScheme="dark" />
     </div>
   );
 }

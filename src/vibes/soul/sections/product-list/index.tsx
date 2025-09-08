@@ -6,9 +6,10 @@ import {
   ProductCardSkeleton,
 } from "@/vibes/soul/primitives/product-card";
 import * as Skeleton from "@/vibes/soul/primitives/skeleton";
+import { Stream, Streamable } from "../../lib/streamable";
 
 interface ProductListProps {
-  products: Product[];
+  products: Streamable<Product[]>;
   compareProducts?: Product[];
   className?: string;
   colorScheme?: "light" | "dark";
@@ -45,32 +46,36 @@ export function ProductList({
   emptyStateSubtitle = "Try browsing our complete catalog of products.",
   placeholderCount = 8,
 }: ProductListProps) {
-  const productsData = products;
-  //some use case to use `.then` here that will cause an infinite loop
-  if (productsData.length === 0) {
-    return (
-      <ProductListEmptyState
-        emptyStateSubtitle={emptyStateSubtitle}
-        emptyStateTitle={emptyStateTitle}
-        placeholderCount={placeholderCount}
-      />
-    );
-  }
-
   return (
-    <div className={clsx("@container w-full", className)}>
-      <div className="mx-auto grid grid-cols-1 gap-x-4 gap-y-6 @sm:grid-cols-2 @2xl:grid-cols-3 @2xl:gap-x-5 @2xl:gap-y-8 @5xl:grid-cols-4 @7xl:grid-cols-5">
-        {productsData.map((product) => (
-          <ProductCard
-            aspectRatio={aspectRatio}
-            colorScheme={colorScheme}
-            imageSizes="(min-width: 80rem) 20vw, (min-width: 64rem) 25vw, (min-width: 42rem) 33vw, (min-width: 24rem) 50vw, 100vw"
-            key={product.id}
-            product={product}
-          />
-        ))}
-      </div>
-    </div>
+    <Stream value={products} fallback={<ProductListSkeleton />}>
+      {(productsData) => {
+        if (productsData.length === 0) {
+          return (
+            <ProductListEmptyState
+              emptyStateSubtitle={emptyStateSubtitle}
+              emptyStateTitle={emptyStateTitle}
+              placeholderCount={placeholderCount}
+            />
+          );
+        }
+
+        return (
+          <div className={clsx("@container w-full", className)}>
+            <div className="mx-auto grid grid-cols-1 gap-x-4 gap-y-6 @sm:grid-cols-2 @2xl:grid-cols-3 @2xl:gap-x-5 @2xl:gap-y-8 @5xl:grid-cols-4 @7xl:grid-cols-5">
+              {productsData.map((product) => (
+                <ProductCard
+                  aspectRatio={aspectRatio}
+                  colorScheme={colorScheme}
+                  imageSizes="(min-width: 80rem) 20vw, (min-width: 64rem) 25vw, (min-width: 42rem) 33vw, (min-width: 24rem) 50vw, 100vw"
+                  key={product.id}
+                  product={product}
+                />
+              ))}
+            </div>
+          </div>
+        );
+      }}
+    </Stream>
   );
 }
 
