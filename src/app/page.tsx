@@ -8,7 +8,7 @@ export default function Home() {
   return (
     <div>
       <h1 className="text-white text-4xl text-center mb-20">My Products</h1>
-        <ProductList products={products} colorScheme="dark" />
+        <ProductList products={products} />
     </div>
   );
 }
