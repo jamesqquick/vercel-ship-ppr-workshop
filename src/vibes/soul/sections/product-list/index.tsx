@@ -9,16 +9,6 @@ import * as Skeleton from "@/vibes/soul/primitives/skeleton";
 
 interface ProductListProps {
   products: Product[];
-  compareProducts?: Product[];
-  className?: string;
-  colorScheme?: "light" | "dark";
-  aspectRatio?: "5:6" | "3:4" | "1:1";
-  emptyStateTitle?: string;
-  emptyStateSubtitle?: string;
-  placeholderCount?: number;
-  removeLabel?: string;
-  maxItems?: number;
-  maxCompareLimitMessage?: string;
 }
 
 /**
@@ -37,33 +27,22 @@ interface ProductListProps {
  * ```
  */
 export function ProductList({
-  products,
-  className = "",
-  colorScheme = "dark",
-  aspectRatio = "5:6",
-  emptyStateTitle = "No products found",
-  emptyStateSubtitle = "Try browsing our complete catalog of products.",
-  placeholderCount = 8,
+  products
 }: ProductListProps) {
   const productsData = products;
   //some use case to use `.then` here that will cause an infinite loop
   if (productsData.length === 0) {
     return (
       <ProductListEmptyState
-        emptyStateSubtitle={emptyStateSubtitle}
-        emptyStateTitle={emptyStateTitle}
-        placeholderCount={placeholderCount}
       />
     );
   }
 
   return (
-    <div className={clsx("@container w-full", className)}>
+    <div className={clsx("@container w-full")}>
       <div className="mx-auto grid grid-cols-1 gap-x-4 gap-y-6 @sm:grid-cols-2 @2xl:grid-cols-3 @2xl:gap-x-5 @2xl:gap-y-8 @5xl:grid-cols-4 @7xl:grid-cols-5">
         {productsData.map((product) => (
           <ProductCard
-            aspectRatio={aspectRatio}
-            colorScheme={colorScheme}
             imageSizes="(min-width: 80rem) 20vw, (min-width: 64rem) 25vw, (min-width: 42rem) 33vw, (min-width: 24rem) 50vw, 100vw"
             key={product.id}
             product={product}
@@ -74,20 +53,15 @@ export function ProductList({
   );
 }
 
-export function ProductListSkeleton({
-  className,
-  placeholderCount = 8,
-}: Pick<ProductListProps, "className" | "placeholderCount">) {
+export function ProductListSkeleton() {
   return (
     <Skeleton.Root
       className={clsx(
-        "group-has-[[data-pending]]/product-list:animate-pulse",
-        className
-      )}
+        "group-has-[[data-pending]]/product-list:animate-pulse"      )}
       pending
     >
       <div className="mx-auto grid grid-cols-1 gap-x-4 gap-y-6 @sm:grid-cols-2 @2xl:grid-cols-3 @2xl:gap-x-5 @2xl:gap-y-8 @5xl:grid-cols-4 @7xl:grid-cols-5">
-        {Array.from({ length: placeholderCount }).map((_, index) => (
+        {Array.from({ length: 8 }).map((_, index) => (
           <ProductCardSkeleton key={index} />
         ))}
       </div>
@@ -95,33 +69,25 @@ export function ProductListSkeleton({
   );
 }
 
-export function ProductListEmptyState({
-  className,
-  placeholderCount = 8,
-  emptyStateTitle,
-  emptyStateSubtitle,
-}: Pick<
-  ProductListProps,
-  "className" | "placeholderCount" | "emptyStateTitle" | "emptyStateSubtitle"
->) {
+export function ProductListEmptyState() {
   return (
-    <Skeleton.Root className={clsx("relative", className)}>
+    <Skeleton.Root className={clsx("relative")}>
       <div
         className={clsx(
           "mx-auto grid grid-cols-1 gap-x-4 gap-y-6 [mask-image:linear-gradient(to_bottom,_black_0%,_transparent_90%)] @sm:grid-cols-2 @2xl:grid-cols-3 @2xl:gap-x-5 @2xl:gap-y-8 @5xl:grid-cols-4 @7xl:grid-cols-5"
         )}
       >
-        {Array.from({ length: placeholderCount }).map((_, index) => (
+        {Array.from({ length: 8 }).map((_, index) => (
           <ProductCardSkeleton key={index} />
         ))}
       </div>
       <div className="absolute inset-0 mx-auto px-3 py-16 pb-3 @4xl:px-10 @4xl:pt-28 @4xl:pb-10">
         <div className="mx-auto max-w-xl space-y-2 text-center @4xl:space-y-3">
           <h3 className="font-(family-name:--product-list-empty-state-title-font-family,var(--font-family-heading)) text-2xl leading-tight text-(--product-list-empty-state-title,var(--foreground)) @4xl:text-4xl @4xl:leading-none">
-            {emptyStateTitle}
+            No products found
           </h3>
           <p className="font-(family-name:--product-list-empty-state-subtitle-font-family,var(--font-family-body)) text-sm text-(--product-list-empty-state-subtitle,var(--contrast-500)) @4xl:text-lg">
-            {emptyStateSubtitle}
+            Try browsing our complete catalog of products.
           </p>
         </div>
       </div>
