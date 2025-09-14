@@ -10,16 +10,6 @@ import { Stream, Streamable } from "../../lib/streamable";
 
 interface ProductListProps {
   products: Streamable<Product[]>;
-  compareProducts?: Product[];
-  className?: string;
-  colorScheme?: "light" | "dark";
-  aspectRatio?: "5:6" | "3:4" | "1:1";
-  emptyStateTitle?: string;
-  emptyStateSubtitle?: string;
-  placeholderCount?: number;
-  removeLabel?: string;
-  maxItems?: number;
-  maxCompareLimitMessage?: string;
 }
 
 /**
