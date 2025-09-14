@@ -12,21 +12,6 @@ interface ProductListProps {
   products: Streamable<Product[]>;
 }
 
-/**
- * This component supports various CSS variables for theming. Here's a comprehensive list, along
- * with their default values:
- *
- * ```css
- * :root {
- *   --product-list-light-empty-title: var(--foreground);
- *   --product-list-light-empty-subtitle: var(--contrast-500);
- *   --product-list-dark-empty-title: var(--background);
- *   --product-list-dark-empty-subtitle: var(--contrast-100);
- *   --product-list-empty-state-title-font-family: var(--font-family-heading);
- *   --product-list-empty-state-subtitle-font-family: var(--font-family-body);
- * }
- * ```
- */
 export function ProductList({
   products,
 }: ProductListProps) {
