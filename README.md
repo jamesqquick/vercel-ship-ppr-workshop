@@ -165,7 +165,13 @@ One important thing to note, though, is that **this still requires a full trip t
 
 PPR allows the static part of your application to be served from a CDN, while still allowing dynamic data to be fetched on the server and streamed to the client. In this case, the markup for the page layout including the header will be served from the CDN, while the product data will still be fetched on the server and streamed to the client.
 
-The beautiful thing is that this is all handled automatically by Next.js. You don't have to do anything special to enable PPR. Just use `Suspense` and `async/await` in your components, and Next.js will take care of the rest as long as you enable PPR in your `next.config.js` file:
+The beautiful thing is that this is mostly handled automatically by Next.js. To use PPR, you currently need to install the Canary version of Next.js (already included with this repository).
+
+```bash
+npm install next@canary
+```
+
+Additionally, you need to enable the experimental PPR feature in your `next.config.js` file like so:
 
 ```ts
 import type { NextConfig } from 'next'
@@ -179,17 +185,41 @@ const nextConfig: NextConfig = {
 export default nextConfig
 ```
 
-You'll also need to mark your route to support experimental PPR.
+You'll also need to mark your route/page to support experimental PPR:
 
 ```tsx
 export const experimental_ppr = true
 ```
 
-From now on, we will continue to focus on improving the developer experience of the `ProductList` component. All of the updates we will make will still be supported by PPR.
+Although this is all that's required to enable PPR, there is one more thing we need to do to actually use it. Right now, we are simiulating data fetching with a hard-coded promise with a delay. 
+
+Although Next.js 15 does less automatic caching/static rendering than Next.js 14, in this case, Next.js will still build our home page statically. You can test this by running a build `npm run build` and seeing the home page is marked as static.
+
+To leverage PPR, we need to activate dynamic rendering for the home page. There are several ways to do this by using cookies, headers, etc In this case, we will use the `fetch` API with a `no-store` cache option. This will tell Next.js that this data is dynamic and should be fetched on the server for each request. For more details, check out the [Dynamic Rendering](https://nextjs.org/docs/app/getting-started/partial-prerendering#dynamic-rendering) section in the PPR docs.
+
+*Keep in mind that this example is just for demonstration purposes. Since we are just referencing static data, we wouldn't typically add the `no-store` cache option. However, in a real-world scenario, the data that is loaded might be based on user preferences, location, etc. requiring dynamic rendering. In those cases, it makes sense to load the data dynamically on the server each time.
+
+Now, you can update the code to fetch data from an API endpoint. Unfortunately, we can't just create a Next.js API route for this. Since this endpoint needs to be available during the Next.js build time, we can create a simple Express server that serves the product data. This server can be started alongside the Next.js app during development. Make sure to copy the `server` directory from the `main` branch of the repo to your project. Then, start the Node server at port 3001 with the following command:
+
+```bash
+node server/index.js
+```
+
+Lastly, you can update the simulated data fetching code with the new fetch request.
+
+```tsx
+const products = fetch("http://localhost:3001/api/products", {
+    cache: "no-store",
+  })
+    .then((res) => res.json()) as Promise<Product[]>;
+```
+
+On the front-end, things should work exactly the same. However, if you run a new build with `npm run build`, you'll see the terminal specifies that the home page is using Partial Prerendering.
+
 
 ## Improving the Loading State UI
 
-This works but it doesn't look great. Already included in the `ProductList` component is a `ProductListSkeleton` component that can be used as a fallback UI. Import and use that component to display a much nicer loading state.
+The loading state is working, but it doesn't look great. Already included in the `ProductList` component is a `ProductListSkeleton` component that can be used as a fallback UI. Import and use that component to display a much nicer loading state.
 
 ```tsx
 import { ProductList, ProductListSkeleton } from "@/vibes/soul/sections/product-list";
